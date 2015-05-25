@@ -65,7 +65,7 @@ do_start()
 	#   2 if daemon could not be started
 	start-stop-daemon --start --quiet --user nobody --exec $DAEMON --test \
 		|| return 1
-	export N2N_KEY
+	[ "$N2N_KEY" != ""] && export N2N_KEY
 	start-stop-daemon --start --quiet --user nobody --exec $DAEMON -- \
 		-a $N2N_IP -c $N2N_COMMUNITY -l $N2N_SUPERNODE:7654 -u $(id -u nobody) -g $(id -g nobody) \
 		$DAEMON_ARGS \
