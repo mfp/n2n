@@ -12,7 +12,7 @@
 
 
 #define N2N_SN_LPORT_DEFAULT 7654
-#define N2N_SN_PKTBUF_SIZE   2048
+#define N2N_SN_PKTBUF_SIZE   9300
 
 #define N2N_SN_MGMT_PORT                5645
 
