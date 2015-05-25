@@ -472,6 +472,7 @@ static void help() {
 #if defined(N2N_CAN_NAME_IFACE)
 	 "-d <tun device> "
 #endif /* #if defined(N2N_CAN_NAME_IFACE) */
+	 "-e <command> "
 	 "-a [static:|dhcp:]<tun IP address> "
 	 "-c <community> "
 	 "[-k <encrypt key> | -K <key file>] "
@@ -501,6 +502,8 @@ static void help() {
   printf("-l <supernode host:port> | Supernode IP:port\n");
   printf("-b                       | Periodically resolve supernode IP\n");
   printf("                         : (when supernodes are running on dynamic IPs)\n");
+  printf("-e <command>             | execute  <command> <tun device name> <IP>\n");
+  printf("                         : once the device has been brought up\n");
   printf("-p <local port>          | Fixed local UDP port.\n");
 #ifndef WIN32
   printf("-u <UID>                 | User ID (numeric) to use when privileges are dropped.\n");
@@ -1117,6 +1120,7 @@ static const struct option long_options[] = {
   { "community",       required_argument, NULL, 'c' },
   { "supernode-list",  required_argument, NULL, 'l' },
   { "tun-device",      required_argument, NULL, 'd' },
+  { "exec",            required_argument, NULL, 'e' },
   { "euid",            required_argument, NULL, 'u' },
   { "egid",            required_argument, NULL, 'g' },
   { "help"   ,         no_argument,       NULL, 'h' },
@@ -1945,6 +1949,7 @@ int main(int argc, char* argv[])
 
     char    device_mac[N2N_MACNAMSIZ]="";
     char *  encrypt_key=NULL;
+    char *  exec_script=NULL;
 
     int     i, effectiveargc=0;
     char ** effectiveargv=NULL;
@@ -2017,7 +2022,7 @@ int main(int argc, char* argv[])
     optarg = NULL;
     while((opt = getopt_long(effectiveargc,
                              effectiveargv,
-                             "K:k:a:bc:Eu:g:m:M:s:d:l:p:fvhrt:", long_options, NULL)) != EOF)
+                             "K:k:a:bc:Eu:g:m:M:s:d:e:l:p:fvhrt:", long_options, NULL)) != EOF)
     {
         switch (opt)
         {
@@ -2130,6 +2135,11 @@ int main(int argc, char* argv[])
             break;
         }
 #endif
+        case 'e':
+        {
+            exec_script = strdup(optarg);
+            break;
+        }
 
         case 'b':
         {
@@ -2244,7 +2254,8 @@ int main(int argc, char* argv[])
         traceEvent(TRACE_NORMAL, "ip_mode='%s'", ip_mode);        
     }
 
-    if(tuntap_open(&(eee.device), tuntap_dev_name, ip_mode, ip_addr, netmask, device_mac, mtu) < 0)
+    if(tuntap_open(&(eee.device), tuntap_dev_name, ip_mode, ip_addr, netmask,
+                   device_mac, mtu, exec_script) < 0)
         return(-1);
 
 #ifndef WIN32

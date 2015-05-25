@@ -64,7 +64,7 @@ int tuntap_open(tuntap_dev *device,
                 char *device_ip, 
                 char *device_mask,
                 const char * device_mac,
-		int mtu) {
+		int mtu, const char *exec_script) {
   char *tuntap_device = "/dev/net/tun";
 #define N2N_LINUX_SYSTEMCMD_SIZE 128
   char buf[N2N_LINUX_SYSTEMCMD_SIZE];
@@ -113,6 +113,12 @@ int tuntap_open(tuntap_dev *device,
 
   system(buf);
   traceEvent(TRACE_INFO, "Bringing up: %s", buf);
+
+  if(exec_script) {
+      snprintf(buf, sizeof(buf), "%s %s %s", exec_script, ifr.ifr_name, device_ip);
+      traceEvent(TRACE_INFO, "Executing: %s", buf);
+      system(buf);
+  }
 
   device->ip_addr = inet_addr(device_ip);
   device->device_mask = inet_addr(device_mask);

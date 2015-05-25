@@ -4,7 +4,7 @@ edge \- n2n edge node daemon
 .SH SYNOPSIS
 .B edge
 [\-d <tun device>] \-a <tun IP address> \-c <community> {\-k <encrypt key>|\-K <keyfile>} 
-[\-s <netmask>] \-l <supernode host:port> 
+[\-e <command>] [\-s <netmask>] \-l <supernode host:port> 
 [\-p <local port>] [\-u <UID>] [\-g <GID>] [-f] [\-m <MAC address>] [\-r] [\-v]
 .SH DESCRIPTION
 N2N is a peer-to-peer VPN system. Edge is the edge node daemon for n2n which
@@ -16,6 +16,11 @@ begin to find other nodes in the community.
 .TP
 \-d <name>
 sets the TAP device name as seen in ifconfig. Only available on Linux.
+.TP
+\-e <command>
+execute 
+.B <command> <tun device name> <IP>
+once the device has been brought up. Not honored on win32.
 .TP
 \-a {<addr>|static:<addr>|dhcp:0.0.0.0}
 sets the n2n virtual LAN IP address being claimed. This is a private IP

@@ -261,7 +261,7 @@ int tuntap_open(struct tuntap_dev *device,
                 char *device_ip, 
                 char *device_mask, 
                 const char * device_mac, 
-                int mtu) {
+                int mtu, const char *exec_script) {
     return(open_wintap(device, address_mode, device_ip, device_mask, device_mac, mtu));
 }
 

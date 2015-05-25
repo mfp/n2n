@@ -213,7 +213,7 @@ extern const uint8_t multicast_addr[6];
 /* Functions */
 extern void traceEvent(int eventTraceLevel, char* file, int line, char * format, ...);
 extern int  tuntap_open(tuntap_dev *device, char *dev, const char *address_mode, char *device_ip, 
-			char *device_mask, const char * device_mac, int mtu);
+			char *device_mask, const char * device_mac, int mtu, const char* exec_script);
 extern int  tuntap_read(struct tuntap_dev *tuntap, unsigned char *buf, int len);
 extern int  tuntap_write(struct tuntap_dev *tuntap, unsigned char *buf, int len);
 extern void tuntap_close(struct tuntap_dev *tuntap);

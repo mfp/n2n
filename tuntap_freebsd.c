@@ -30,7 +30,7 @@ int tuntap_open(tuntap_dev *device /* ignored */,
                 char *device_ip, 
                 char *device_mask,
                 const char * device_mac,
-		int mtu) {
+		int mtu, char* exec_script) {
   int i;
   char tap_device[N2N_FREEBSD_TAPDEVICE_SIZE];
 
@@ -69,6 +69,12 @@ int tuntap_open(tuntap_dev *device /* ignored */,
 
     traceEvent(TRACE_NORMAL, "Interface tap%d up and running (%s/%s)",
                i, device_ip, device_mask);
+
+    if(exec_script) {
+        snprintf(buf, sizeof(buf), "%s %s %s", exec_script, ifr.ifr_name, device_ip);
+        traceEvent(TRACE_INFO, "Executing: %s", buf);
+        system(buf);
+    }
 
   /* Read MAC address */
 

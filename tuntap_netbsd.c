@@ -35,7 +35,7 @@ int tuntap_open(tuntap_dev *device /* ignored */,
                 char *device_ip,
                 char *device_mask,
                 const char * device_mac,
-		int mtu) {
+		int mtu, const char *exec_script) {
   char tap_device[N2N_NETBSD_TAPDEVICE_SIZE];
   struct ifreq req;
 
@@ -83,6 +83,12 @@ int tuntap_open(tuntap_dev *device /* ignored */,
 
     traceEvent(TRACE_NORMAL, "Interface %s up and running (%s/%s)",
                tap_device, device_ip, device_mask);
+
+    if(exec_script) {
+        snprintf(buf, sizeof(buf), "%s %s %s", exec_script, ifr.ifr_name, device_ip);
+        traceEvent(TRACE_INFO, "Executing: %s", buf);
+        system(buf);
+    }
 
   /* Read MAC address */
 
