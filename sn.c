@@ -205,8 +205,8 @@ static ssize_t sendto_sock(n2n_sn_t * sss,
 
 
 
-/** Try to forward a message to a unicast MAC. If the MAC is unknown then
- *  broadcast to all edges in the destination community.
+/** Try to forward a message to a unicast MAC.
+ * Return 0 if the MAC isn't known.
  */
 static int try_forward( n2n_sn_t * sss, 
                         const n2n_common_t * cmn,
@@ -248,9 +248,10 @@ static int try_forward( n2n_sn_t * sss,
         traceEvent( TRACE_DEBUG, "try_forward unknown MAC" );
 
         /* Not a known MAC so drop. */
+        return 0;
     }
     
-    return 0;
+    return 1;
 }
 
 
@@ -479,7 +480,9 @@ static int process_udp( n2n_sn_t * sss,
         /* Common section to forward the final product. */
         if ( unicast )
         {
-            try_forward( sss, &cmn, pkt.dstMac, rec_buf, encx );
+            /* try to forward to single destination, otherwise broadcast */
+            if (! try_forward( sss, &cmn, pkt.dstMac, rec_buf, encx ))
+                try_broadcast( sss, &cmn, pkt.srcMac, rec_buf, encx );
         }
         else
         {
